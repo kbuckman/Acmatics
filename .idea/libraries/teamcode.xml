@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="teamcode">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/teamcode.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
