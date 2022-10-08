@@ -11,7 +11,7 @@ public class PIDController {
     getSum is how much to impact the system's output (ex : motor position (via power), angle position (via velocity change), velocity (via adding to current motor power) etc...)
      */
 
-    // feed this program position and time.
+    // feed this program position and time. It will (hopefully) give you everything else.
 
     private double position = 0, velocity = 0, integral = 0, error = 0;
 
