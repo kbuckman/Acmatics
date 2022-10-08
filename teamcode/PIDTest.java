@@ -1,54 +1,64 @@
-    package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.Servo;
+
 import java.lang.Math;
 
-@Autonomous(name="PIDTest")
+@Autonomous
 
 public class PIDTest extends OpMode {
-    DcMotor UpDownArm;
-    DcMotor ExtendArm;
-    DcMotor FrontRightWheel;
-    DcMotor FrontLeftWheel;
-    DcMotor motor;
-    DcMotor BackLeftWheel;
-    Servo Claw;
-    
+
+    RobotHardware robot = new RobotHardware();
+    PIDController cMotor11;
+    static long startTime;
+    static double time;
+    static double deltaTime;
+
     @Override
     public void init() {
-        FrontRightWheel = hardwareMap.dcMotor.get("motor 0 c");
+
+        robot.init(hardwareMap); //inititalizes all motors
+
+        cMotor11 = new PIDController();
+
+        cMotor11.setPoint(robot.motor11.getCurrentPosition());
+        cMotor11.setCoefficients(0.008, 0.0001, 0); // P I D
+
+    }
+
+    @Override
+    public void start() {
+        startTime = System.nanoTime();
+        time = 0;
     }
 
     @Override
     public void loop() {
-        pid(1, 0, 0.000001, 1000, FrontRightWheel);
-    }
-    static void pid(double kp, double kd, double ki, double sp, DcMotor motor) {
-        sp = sp + motor.getCurrentPosition();
-        double error = sp - motor.getCurrentPosition();
-        double times = 0;
-        double vel = 0;
-        double integral = 0;
-        double out = 0;
-        while (times < 100){
-            vel = sp - motor.getCurrentPosition() - error;
-            error = sp - motor.getCurrentPosition();
-            integral = integral + error;
-            out = kp*error + kd*vel + ki*integral;
-            motor.setPower(out);
-            if (error < 5) {
-                times = times + 1;
-            }
+        updateTime();
+        cMotor11.update( robot.motor11.getCurrentPosition() , deltaTime );
+        robot.motor1.setPower(cMotor11.getSum());
+
+        if(gamepad2.x){
+            cMotor11.increaseSetPoint(15);
         }
+        else if(gamepad2.y){
+            cMotor11.increaseSetPoint(-15);
+        }
+
+        /*
+        This should be the entirety of a PID ctrl system
+         */
+    }
+
+    public static void updateTime(){
+        previousTime = time;
+        time = ((double)(System.nanoTime() - startTime))/1_000_000_000.0;
+        deltaTime = time-previousTime;
     }
 }
-
-    
-    
-    
-    
-    
