@@ -52,11 +52,4 @@ public class RobotHardware {
         motor22.setPower(0);
 
         // CALIBRATE SENSORES
-
-    }
-
-    public void resetDriveTrain() {
-
-    }
-
 }
